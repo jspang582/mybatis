@@ -990,6 +990,10 @@ public class Configuration {
     }
   }
 
+  /**
+   * HashMap的变种,支持通过shortName获取fullName设置的value
+   * @param <V>
+   */
   protected static class StrictMap<V> extends HashMap<String, V> {
 
     private static final long serialVersionUID = -4950446264854982944L;
@@ -1032,27 +1036,39 @@ public class Configuration {
     @Override
     @SuppressWarnings("unchecked")
     public V put(String key, V value) {
+      // key不能重复
       if (containsKey(key)) {
         throw new IllegalArgumentException(name + " already contains value for " + key
             + (conflictMessageProducer == null ? "" : conflictMessageProducer.apply(super.get(key), value)));
       }
+      // 如果key为fullName
       if (key.contains(".")) {
+        // 获取shortName
         final String shortKey = getShortName(key);
+        // 如果key->shortName不存在,则put shortName
+        // 如果key->shortName已经存在,设置value为Ambiguity,当get(key)时抛出异常，
+        // 例如1:先put(xx.a.MyCache),再put(xx.b.MyCache)
+        // 例如2:先put(MyCache),再put(xx.xx.MyCache)
         if (super.get(shortKey) == null) {
           super.put(shortKey, value);
         } else {
           super.put(shortKey, (V) new Ambiguity(shortKey));
         }
       }
+      // put key
       return super.put(key, value);
     }
 
     @Override
     public V get(Object key) {
       V value = super.get(key);
+      // 通过key get到的value一定要有值，否则抛出异常
       if (value == null) {
         throw new IllegalArgumentException(name + " does not contain value for " + key);
       }
+      // 先put(xx.a.MyCache),再put(xx.b.MyCache)
+      // 先put(MyCache),再put(xx.xx.MyCache)
+      // 以上两种情况下get(MyCache)是不允许的
       if (value instanceof Ambiguity) {
         throw new IllegalArgumentException(((Ambiguity) value).getSubject() + " is ambiguous in " + name
             + " (try using the full name including the namespace, or rename one of the entries)");
@@ -1060,6 +1076,11 @@ public class Configuration {
       return value;
     }
 
+    /**
+     * put fullName1 ->com.mycache.MyCache
+     * put fullName2 ->com.ohter.MyCache
+     * 然后get(shortName->MyCache)是不允许的,因为不知道取哪个
+     */
     protected static class Ambiguity {
       private final String subject;
 
