@@ -48,6 +48,8 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 
 /**
+ * 解析mybatis全局配置文件,目的是把配置文件中的属性转成Configuration对象
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -91,11 +93,22 @@ public class XMLConfigBuilder extends BaseBuilder {
     this.parser = parser;
   }
 
+  /**
+   * 解析xml全局配置文件为Configuration对象
+   */
   public Configuration parse() {
+    // 如果已经解析过了,则抛出异常
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
+    // 设置解析标志位
     parsed = true;
+    /**
+     * 解析配置文件中的节点
+     * <configuration>
+     *   ...
+     * </configuration>
+     */
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
@@ -103,20 +116,136 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void parseConfiguration(XNode root) {
     try {
       // issue #117 read properties first
+      /**
+       * 解析properties节点,如:
+       * <properties resource="org/apache/ibatis/databases/blog/blog-derby.properties"/>
+       * 并设置到Configuration对象中的variables属性中
+       */
       propertiesElement(root.evalNode("properties"));
+
+      /**
+       *　解析settings节点,如:
+       *   <settings>
+       *     <setting name="cacheEnabled" value="true"/>
+       *     <setting name="lazyLoadingEnabled" value="false"/>
+       *     <setting name="multipleResultSetsEnabled" value="true"/>
+       *     <setting name="useColumnLabel" value="true"/>
+       *     <setting name="useGeneratedKeys" value="false"/>
+       *     <setting name="defaultExecutorType" value="SIMPLE"/>
+       *     <setting name="defaultStatementTimeout" value="25"/>
+       *   </settings>
+       *   最后会尽可能填充到Configuration对象的各个属性中
+       */
       Properties settings = settingsAsProperties(root.evalNode("settings"));
+
+      /**
+       * VFS:虚拟文件系统,通过程序方便读取本地文件系统、FTP文件系统等系统中的文件资源。mybatis通过该配置可加载自定义的虚拟文件系统应用程序。
+       * 并设置到Configuration对象中的vfsImpl属性中
+       */
       loadCustomVfs(settings);
+
+      /**
+       * 指定mybatis所用日志的具体实现,未指定时将自动查找
+       * 并设置到Configuration对象中的logImpl属性中
+       */
       loadCustomLogImpl(settings);
+
+      /**
+       * 解析typeAliases节点,如:
+       *   <typeAliases>
+       *     <typeAlias alias="Author" type="org.apache.ibatis.domain.blog.Author"/>
+       *     <typeAlias alias="Blog" type="org.apache.ibatis.domain.blog.Blog"/>
+       *     <typeAlias alias="Comment" type="org.apache.ibatis.domain.blog.Comment"/>
+       *     <typeAlias alias="Post" type="org.apache.ibatis.domain.blog.Post"/>
+       *     <typeAlias alias="Section" type="org.apache.ibatis.domain.blog.Section"/>
+       *     <typeAlias alias="Tag" type="org.apache.ibatis.domain.blog.Tag"/>
+       *   </typeAliases>
+       * 并注册到Configuration对象中的typeAliasRegistry别名注册器中
+       */
       typeAliasesElement(root.evalNode("typeAliases"));
+
+      /**
+       * 解析plugins节点,如:
+       *   <plugins>
+       *     <plugin interceptor="org.apache.ibatis.builder.ExamplePlugin">
+       *       <property name="pluginProperty" value="100"/>
+       *     </plugin>
+       *   </plugins>
+       * 并添加到Configuration对象中的interceptorChain拦截器链中
+       */
       pluginElement(root.evalNode("plugins"));
+
+      /**
+       * 解析objectFactory节点,如:
+       *  <objectFactory type="org.apache.ibatis.builder.ExampleObjectFactory">
+       *     <property name="objectFactoryProperty" value="100"/>
+       *  </objectFactory>
+       * 并设置到到Configuration对象中的objectFactory属性中
+       */
       objectFactoryElement(root.evalNode("objectFactory"));
+
+      /**
+       * 解析objectWrapperFactory节点,如:
+       *  <objectWrapperFactory type="org.apache.ibatis.builder.CustomObjectWrapperFactory" />
+       * 并设置到到Configuration对象中的objectWrapperFactory属性中
+       */
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+
+      /**
+       * 解析reflectorFactory节点,如:
+       *  <reflectorFactory type="org.apache.ibatis.builder.CustomReflectorFactory"/>
+       * 并设置到到Configuration对象中的reflectorFactory属性中
+       */
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
+
+      // 根据settings节点中配置的属性尽可能填充到Configuration对象中
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
+
+      /**
+       * 解析environments节点,如:
+       *   <environments default="development">
+       *     <environment id="development">
+       *       <transactionManager type="JDBC">
+       *         <property name="" value=""/>
+       *       </transactionManager>
+       *       <dataSource type="UNPOOLED">
+       *         <property name="driver" value="${driver}"/>
+       *         <property name="url" value="${url}"/>
+       *         <property name="username" value="${username}"/>
+       *         <property name="password" value="${password}"/>
+       *       </dataSource>
+       *     </environment>
+       *   </environments>
+       * 根据XMLConfigBuilder中environment匹配<environment id="xxx">并设置到到Configuration对象中的environment属性中
+       */
       environmentsElement(root.evalNode("environments"));
+
+      /**
+       * 解析databaseIdProvider节点,如:
+       *   <databaseIdProvider type="DB_VENDOR">
+       *     <property name="Apache Derby" value="derby"/>
+       *   </databaseIdProvider>
+       * 并设置到到Configuration对象中的databaseId属性中
+       */
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+
+      /**
+       * 解析typeHandlers节点,如:
+       *     <typeHandlers>
+       *         <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="java.math.RoundingMode"/>
+       *     </typeHandlers>
+       * 并注册到typeHandlerRegistry类型转换注册器
+       */
       typeHandlerElement(root.evalNode("typeHandlers"));
+
+      /**
+       * 解析mappers节点,如:
+       *     <mappers>
+       *         <mapper resource="org/apache/ibatis/submitted/rounding/Mapper.xml" />
+       *     </mappers>
+       * 并添加到Configuration对象中mapperRegistry Mapper注册器中
+       */
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
