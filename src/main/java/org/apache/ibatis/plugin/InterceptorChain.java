@@ -20,12 +20,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 拦截器执行链,允许一个对象被多次代理
  * @author Clinton Begin
  */
 public class InterceptorChain {
 
+  /**
+   * 拦截器集合
+   */
   private final List<Interceptor> interceptors = new ArrayList<>();
 
+  /**
+   * 嵌套生成代理对象
+   */
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
       target = interceptor.plugin(target);

@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  * The annotation that indicate the method signature.
+ * 标识被代理对象的注解,通过三个属性可确定被代理的具体方法
  *
  * @see Intercepts
  * @author Clinton Begin
@@ -32,6 +33,7 @@ import java.lang.annotation.Target;
 public @interface Signature {
   /**
    * Returns the java type.
+   * 指定需要被代理的对象的Class类型
    *
    * @return the java type
    */
@@ -39,12 +41,14 @@ public @interface Signature {
 
   /**
    * Returns the method name.
+   * 指定需要被代理的对象的方法名称
    *
    * @return the method name
    */
   String method();
 
   /**
+   * 指定被代理对象的方法参数类型
    * Returns java types for method argument.
    * @return java types for method argument
    */

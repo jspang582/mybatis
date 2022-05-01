@@ -18,16 +18,26 @@ package org.apache.ibatis.plugin;
 import java.util.Properties;
 
 /**
+ * 定义代理对象和代理逻辑的拦截器
  * @author Clinton Begin
  */
 public interface Interceptor {
 
+  /**
+   * 执行代理逻辑
+   */
   Object intercept(Invocation invocation) throws Throwable;
 
+  /**
+   * 通过Plugin.wrap方法生成代理对象
+   */
   default Object plugin(Object target) {
     return Plugin.wrap(target, this);
   }
 
+  /**
+   * 设置拦截器的属性
+   */
   default void setProperties(Properties properties) {
     // NOP
   }

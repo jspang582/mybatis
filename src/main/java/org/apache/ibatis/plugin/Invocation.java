@@ -19,12 +19,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * 执行运行被代理对象方法所需要的参数的封装
  * @author Clinton Begin
  */
 public class Invocation {
 
+  // 被代理的对象
   private final Object target;
+  // 被代理的方法
   private final Method method;
+  // 被代理的方法参数
   private final Object[] args;
 
   public Invocation(Object target, Method method, Object[] args) {
@@ -45,6 +49,9 @@ public class Invocation {
     return args;
   }
 
+  /**
+   * 执行代理逻辑
+   */
   public Object proceed() throws InvocationTargetException, IllegalAccessException {
     return method.invoke(target, args);
   }

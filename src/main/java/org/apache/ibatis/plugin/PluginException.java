@@ -18,6 +18,7 @@ package org.apache.ibatis.plugin;
 import org.apache.ibatis.exceptions.PersistenceException;
 
 /**
+ * 定义拦截器执行过程中出现异常
  * @author Clinton Begin
  */
 public class PluginException extends PersistenceException {

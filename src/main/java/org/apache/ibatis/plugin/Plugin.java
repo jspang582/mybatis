@@ -27,6 +27,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.util.MapUtil;
 
 /**
+ * 用来生成代理对象及调用代理逻辑
  * @author Clinton Begin
  */
 public class Plugin implements InvocationHandler {
@@ -41,11 +42,19 @@ public class Plugin implements InvocationHandler {
     this.signatureMap = signatureMap;
   }
 
+  /**
+   * 生成target的代理对象
+   */
   public static Object wrap(Object target, Interceptor interceptor) {
+    // 解析Interceptor类上的@Intercepts信息转成Map<Class<?>, Set<Method>>
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
+    // 获取target所有匹配的可代理的接口class类型
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
+    // 如果有匹配的接口class,则返回生成的代理对象
+    // 否则返回target
     if (interfaces.length > 0) {
+      // 使用jdk代理生成代理对象
       return Proxy.newProxyInstance(
           type.getClassLoader(),
           interfaces,
@@ -54,9 +63,14 @@ public class Plugin implements InvocationHandler {
     return target;
   }
 
+  /**
+   * 代理对象执行代理方法时的回调
+   */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      // 调用拦截器Interceptor.intercept方法执行具体代理逻辑
+      // 根据method从signatureMap中匹配是否需要代理method
       Set<Method> methods = signatureMap.get(method.getDeclaringClass());
       if (methods != null && methods.contains(method)) {
         return interceptor.intercept(new Invocation(target, method, args));
@@ -67,6 +81,10 @@ public class Plugin implements InvocationHandler {
     }
   }
 
+  /**
+   * 获取Interceptor类上@Intercepts注解信息
+   * Map中key为Class对象,value为Method集合,因为可以对同一个目标对象的多个方法进行代理
+   */
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251
@@ -87,6 +105,9 @@ public class Plugin implements InvocationHandler {
     return signatureMap;
   }
 
+  /**
+   * 因为jdk动态代理是基于接口代理,因此要获取目标对象所有匹配的可代理的接口class类型
+   */
   private static Class<?>[] getAllInterfaces(Class<?> type, Map<Class<?>, Set<Method>> signatureMap) {
     Set<Class<?>> interfaces = new HashSet<>();
     while (type != null) {
