@@ -96,6 +96,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * mybatis核心配置类,xml配置文件最终会被解析成Configuration对象
  * @author Clinton Begin
  */
 public class Configuration {

@@ -34,6 +34,12 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 解析Mapper.xml中
+ *  <insert></insert>
+ *  <delete></delete>
+ *  <update></update>
+ *  <select></select>
+ * 中的sql语句
  * @author Clinton Begin
  */
 public class XMLStatementBuilder extends BaseBuilder {

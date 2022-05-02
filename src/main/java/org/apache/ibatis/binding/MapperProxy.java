@@ -31,6 +31,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.util.MapUtil;
 
 /**
+ * Mapper接口类执行方法时的代理逻辑回调
  * @author Clinton Begin
  * @author Eduardo Macarron
  */

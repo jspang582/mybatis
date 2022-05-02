@@ -41,6 +41,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
+ * xml解析器,用来解析xml文件中的各种属性配置
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */

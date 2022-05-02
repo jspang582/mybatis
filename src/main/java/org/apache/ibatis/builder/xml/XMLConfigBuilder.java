@@ -241,9 +241,13 @@ public class XMLConfigBuilder extends BaseBuilder {
 
       /**
        * 解析mappers节点,如:
-       *     <mappers>
-       *         <mapper resource="org/apache/ibatis/submitted/rounding/Mapper.xml" />
-       *     </mappers>
+       *   <mappers>
+       *     <mapper resource="org/apache/ibatis/builder/BlogMapper.xml"/>
+       *     <mapper url="file:./src/test/java/org/apache/ibatis/builder/NestedBlogMapper.xml"/>
+       *     <mapper class="org.apache.ibatis.builder.CachedAuthorMapper"/>
+       *     <package name="org.apache.ibatis.builder.mapper"/>
+       *   </mappers>
+       * 支持4种配置方式
        * 并添加到Configuration对象中mapperRegistry Mapper注册器中
        */
       mapperElement(root.evalNode("mappers"));

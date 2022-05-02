@@ -50,6 +50,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
+ * 解析Mapper配置文件
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -90,9 +91,22 @@ public class XMLMapperBuilder extends BaseBuilder {
     this.resource = resource;
   }
 
+
+  /**
+   * 解析Mapper.xml文件
+   */
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+
+      /**
+       * 解析mapper节点
+       * <mapper namespace="xxx">
+       *   ...
+       * </mapper>
+       */
       configurationElement(parser.evalNode("/mapper"));
+
+
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
     }
@@ -108,16 +122,53 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void configurationElement(XNode context) {
     try {
+      /**
+       * 获取namespace,如:
+       *  <mapper namespace="org.apache.ibatis.domain.blog.mappers.BlogMapper"></mapper>
+       */
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.isEmpty()) {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+
+      /**
+       * 解析cache-ref节点,如:
+       *  <cache-ref></cache-ref>
+       */
       cacheRefElement(context.evalNode("cache-ref"));
+
+      /**
+       * 解析cache节点,如:
+       *  <cache></cache>
+       */
       cacheElement(context.evalNode("cache"));
+
+      /**
+       * 解析parameterMap节点,如:
+       *  <parameterMap></parameterMap>
+       */
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+
+      /**
+       * 解析resultMap节点,如:
+       *  <resultMap></resultMap>
+       */
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+
+      /**
+       * 解析sql节点,如:
+       *  <sql></sql>
+       */
       sqlElement(context.evalNodes("/mapper/sql"));
+
+      /**
+       * 解析crud节点,如:
+       *  <select></select>
+       *  <insert></insert>
+       *  <update></update>
+       *  <delete></delete>
+       */
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -133,8 +184,10 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
+      // 创建sql语句解析器
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
+        // 解析sql
         statementParser.parseStatementNode();
       } catch (IncompleteElementException e) {
         configuration.addIncompleteStatement(statementParser);

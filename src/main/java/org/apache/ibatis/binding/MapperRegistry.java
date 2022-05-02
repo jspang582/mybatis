@@ -27,6 +27,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 
 /**
+ * Mapper接口类注册器
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
