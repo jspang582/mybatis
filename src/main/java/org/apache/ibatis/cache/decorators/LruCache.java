@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.ibatis.cache.Cache;
 
 /**
+ * 最近最少使用算法,缓存回收策略
  * Lru (least recently used) cache decorator.
  *
  * @author Clinton Begin
@@ -47,11 +48,16 @@ public class LruCache implements Cache {
   }
 
   public void setSize(final int size) {
+    // 利用LinkedHashMap实现LRU缓存
     keyMap = new LinkedHashMap<Object, Object>(size, .75F, true) {
       private static final long serialVersionUID = 4267176411845948333L;
 
+      /**
+       * 当put新的值方法返回true时,便移除map中最老的键值对
+       */
       @Override
       protected boolean removeEldestEntry(Map.Entry<Object, Object> eldest) {
+        // map中元素个数大于阈值时开始移除元素
         boolean tooBig = size() > size;
         if (tooBig) {
           eldestKey = eldest.getKey();
@@ -67,6 +73,9 @@ public class LruCache implements Cache {
     cycleKeyList(key);
   }
 
+  /**
+   * 每次访问都会遍历一次key重新排序,将访问元素放在链表尾部
+   */
   @Override
   public Object getObject(Object key) {
     keyMap.get(key); // touch

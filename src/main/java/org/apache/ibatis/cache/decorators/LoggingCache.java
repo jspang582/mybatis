@@ -20,6 +20,7 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
 /**
+ * 输出缓存命中的日志信息
  * @author Clinton Begin
  */
 public class LoggingCache implements Cache {
