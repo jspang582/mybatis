@@ -16,8 +16,17 @@
 package org.apache.ibatis.scripting.xmltags;
 
 /**
+ * sql节点,如:
+ * <if></if>
+ * <foreach></foreach>
+ * 等
+ * 运用到组合设计模式
  * @author Clinton Begin
  */
 public interface SqlNode {
+
+  /**
+   * 拼接sql,通过递归最终拼接成完整sql
+   */
   boolean apply(DynamicContext context);
 }

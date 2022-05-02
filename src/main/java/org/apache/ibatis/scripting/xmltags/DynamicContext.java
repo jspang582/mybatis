@@ -27,6 +27,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 动态sql生成
  * @author Clinton Begin
  */
 public class DynamicContext {

@@ -22,6 +22,8 @@ import org.apache.ibatis.cache.decorators.TransactionalCache;
 import org.apache.ibatis.util.MapUtil;
 
 /**
+ * 事物缓存管理器
+ * 目的:如果有插入操作失败的情况下应该回滚
  * @author Clinton Begin
  */
 public class TransactionalCacheManager {

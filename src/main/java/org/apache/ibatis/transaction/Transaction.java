@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
+ * mybatis定义的事物相关接口
  * Wraps a database connection.
  * Handles the connection lifecycle that comprises: its creation, preparation, commit/rollback and close.
  *

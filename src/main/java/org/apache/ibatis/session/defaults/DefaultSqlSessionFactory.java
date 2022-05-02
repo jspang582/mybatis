@@ -90,10 +90,19 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
+      // 获取环境变量
       final Environment environment = configuration.getEnvironment();
+
+      // 获取事物工厂
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+
+      // 创建事物
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+
+      // 创建sql执行器对象
       final Executor executor = configuration.newExecutor(tx, execType);
+
+      // 返回默认的DefaultSqlSession对象
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       closeTransaction(tx); // may have fetched a connection so lets call close()

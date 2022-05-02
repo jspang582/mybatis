@@ -28,6 +28,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * sql增删改查、提交、关闭、维护缓存等操作执行器
  * @author Clinton Begin
  */
 public interface Executor {

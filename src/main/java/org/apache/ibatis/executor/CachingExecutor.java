@@ -33,6 +33,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * 二级缓存执行器
+ * 使用了装饰器设计模式
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -92,15 +94,25 @@ public class CachingExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
+    // 判断是否开启了二级缓存
+    // <cache></cache>
     Cache cache = ms.getCache();
     if (cache != null) {
       flushCacheIfRequired(ms);
       if (ms.isUseCache() && resultHandler == null) {
         ensureNoOutParams(ms, boundSql);
+
+        // 先从二级缓存中获取
         @SuppressWarnings("unchecked")
         List<E> list = (List<E>) tcm.getObject(cache, key);
+
+        // 二级缓存没有获取到
         if (list == null) {
+
+          // 数据库查询
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+
+          // 加入二级缓存中
           tcm.putObject(cache, key, list); // issue #578 and #116
         }
         return list;

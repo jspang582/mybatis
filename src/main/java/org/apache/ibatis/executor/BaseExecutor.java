@@ -45,6 +45,7 @@ import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 一级缓存统一实现
  * @author Clinton Begin
  */
 public abstract class BaseExecutor implements Executor {
@@ -55,6 +56,10 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
+
+  /**
+   * 一级缓存,sqlSession级别的,当commit、rollback、close时都会清空所有缓存
+   */
   protected PerpetualCache localCache;
   protected PerpetualCache localOutputParameterCache;
   protected Configuration configuration;
@@ -110,9 +115,12 @@ public abstract class BaseExecutor implements Executor {
   @Override
   public int update(MappedStatement ms, Object parameter) throws SQLException {
     ErrorContext.instance().resource(ms.getResource()).activity("executing an update").object(ms.getId());
+    // 如果执行器已经关闭,则抛出异常
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
+
+    // 清空本地缓存
     clearLocalCache();
     return doUpdate(ms, parameter);
   }
@@ -140,19 +148,25 @@ public abstract class BaseExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     ErrorContext.instance().resource(ms.getResource()).activity("executing a query").object(ms.getId());
+    // 如果执行器已经关闭,则抛出异常
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
+
+    // 清空本地缓存,前提是queryStack=0并且要求清空缓存
     if (queryStack == 0 && ms.isFlushCacheRequired()) {
       clearLocalCache();
     }
     List<E> list;
     try {
+      // 从一级缓存中获取查询结果
       queryStack++;
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
+        // 获取到缓存,则进行参数处理
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
+        // 获取不到,则从数据库查询
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {

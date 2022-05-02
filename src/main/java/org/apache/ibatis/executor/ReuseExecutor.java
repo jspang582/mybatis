@@ -34,6 +34,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * 重用预处理语句(PreParedStatement)的执行器
  * @author Clinton Begin
  */
 public class ReuseExecutor extends BaseExecutor {

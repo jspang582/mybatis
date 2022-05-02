@@ -29,6 +29,7 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * Mapper.xml中解析Crud节点后封装的对象
  * @author Clinton Begin
  */
 public final class MappedStatement {
@@ -44,7 +45,7 @@ public final class MappedStatement {
   private Cache cache;
   private ParameterMap parameterMap;
   private List<ResultMap> resultMaps;
-  private boolean flushCacheRequired;
+  private boolean flushCacheRequired; // 是否要求清空缓存
   private boolean useCache;
   private boolean resultOrdered;
   private SqlCommandType sqlCommandType;

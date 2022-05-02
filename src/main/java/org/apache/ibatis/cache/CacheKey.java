@@ -23,6 +23,7 @@ import java.util.StringJoiner;
 import org.apache.ibatis.reflection.ArrayUtil;
 
 /**
+ * 缓存key
  * @author Clinton Begin
  */
 public class CacheKey implements Cloneable, Serializable {

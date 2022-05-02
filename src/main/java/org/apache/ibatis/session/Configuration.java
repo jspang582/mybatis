@@ -688,7 +688,13 @@ public class Configuration {
     return newExecutor(transaction, defaultExecutorType);
   }
 
+  /**
+   * 创建执行器对象,默认是SimpleExecutor
+   * @return
+   */
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
+
+    // 根据executorType创建对应的executor
     executorType = executorType == null ? defaultExecutorType : executorType;
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
     Executor executor;
@@ -699,9 +705,12 @@ public class Configuration {
     } else {
       executor = new SimpleExecutor(this, transaction);
     }
+    // xml配置中可在全局配置文件<settings></settings>中配置是否开启二级缓存,默认是开启的
+    // configuration.setCacheEnabled(booleanValueOf(props.getProperty("cacheEnabled"), true));
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
+    // plugin插件对executor进行动态代理
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
