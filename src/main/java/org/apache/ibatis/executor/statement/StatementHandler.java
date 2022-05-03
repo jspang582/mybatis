@@ -26,6 +26,8 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.session.ResultHandler;
 
 /**
+ * Statement处理器
+ * 职责:获取Connection连接后处理参数映射和结果映射
  * @author Clinton Begin
  */
 public interface StatementHandler {
@@ -33,6 +35,9 @@ public interface StatementHandler {
   Statement prepare(Connection connection, Integer transactionTimeout)
       throws SQLException;
 
+  /**
+   * 设置参数
+   */
   void parameterize(Statement statement)
       throws SQLException;
 

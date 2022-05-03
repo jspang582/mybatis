@@ -30,6 +30,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 
 /**
+ * 解析sql中的#{}
  * @author Clinton Begin
  */
 public class SqlSourceBuilder extends BaseBuilder {

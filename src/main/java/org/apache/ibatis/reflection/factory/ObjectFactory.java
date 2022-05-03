@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * 对象工厂,用来生产对象
  * MyBatis uses an ObjectFactory to create all needed new Objects.
  *
  * @author Clinton Begin

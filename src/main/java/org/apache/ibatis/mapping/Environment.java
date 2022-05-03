@@ -20,6 +20,18 @@ import javax.sql.DataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
 
 /**
+ * 环境对象,对应全局配置xml中的
+ *     <environment id="development">
+ *       <transactionManager type="JDBC">
+ *         <property name="" value=""/>
+ *       </transactionManager>
+ *       <dataSource type="UNPOOLED">
+ *         <property name="driver" value="${driver}"/>
+ *         <property name="url" value="${url}"/>
+ *         <property name="username" value="${username}"/>
+ *         <property name="password" value="${password}"/>
+ *       </dataSource>
+ *     </environment>
  * @author Clinton Begin
  */
 public final class Environment {

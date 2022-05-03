@@ -37,9 +37,12 @@ public class DynamicSqlSource implements SqlSource {
   @Override
   public BoundSql getBoundSql(Object parameterObject) {
     DynamicContext context = new DynamicContext(configuration, parameterObject);
+    // 责任链模式处理一个个的sqlNode,最终输出成一个完整的sql
     rootSqlNode.apply(context);
     SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(configuration);
+    // 处理sql中的#{...}
     Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
+    // 拿到#{}的内容,封装成ParameterMapping对象,并替换成?
     SqlSource sqlSource = sqlSourceParser.parse(context.getSql(), parameterType, context.getBindings());
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
     context.getBindings().forEach(boundSql::setAdditionalParameter);

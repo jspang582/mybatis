@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * 类型处理器接口,用来设置参数和获取结果
  * @author Clinton Begin
  */
 public interface TypeHandler<T> {

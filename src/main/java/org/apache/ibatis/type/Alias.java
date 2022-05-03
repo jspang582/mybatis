@@ -22,7 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 别名注解
+ * 别名注解,加在类上
+ * TypeAliasRegistry.registerAlias(Class<?> type)时
+ * 在没有注解的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名
+ * 若有注解，则别名为其注解值
+ *
  * The annotation that specify alias name.
  *
  * <p>

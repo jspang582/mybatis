@@ -36,8 +36,11 @@ import org.apache.ibatis.session.Configuration;
  */
 public class BoundSql {
 
+  // sql语句,如 select * from user where id = ?
   private final String sql;
+  // 参数映射列表,比如针对id的映射
   private final List<ParameterMapping> parameterMappings;
+  // 参数
   private final Object parameterObject;
   private final Map<String, Object> additionalParameters;
   private final MetaObject metaParameters;

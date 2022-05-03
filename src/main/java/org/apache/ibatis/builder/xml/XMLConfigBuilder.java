@@ -159,6 +159,7 @@ public class XMLConfigBuilder extends BaseBuilder {
        *     <typeAlias alias="Post" type="org.apache.ibatis.domain.blog.Post"/>
        *     <typeAlias alias="Section" type="org.apache.ibatis.domain.blog.Section"/>
        *     <typeAlias alias="Tag" type="org.apache.ibatis.domain.blog.Tag"/>
+       *     <package name="domain.blog"/>
        *   </typeAliases>
        * 并注册到Configuration对象中的typeAliasRegistry别名注册器中
        */
@@ -293,6 +294,10 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void typeAliasesElement(XNode parent) {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        /**
+         * 指定一个包名，MyBatis会在包名下面搜索需要的 Java Bean
+         * 每一个在包中的 Java Bean，在没有注解的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名。
+         */
         if ("package".equals(child.getName())) {
           String typeAliasPackage = child.getStringAttribute("name");
           configuration.getTypeAliasRegistry().registerAliases(typeAliasPackage);

@@ -101,6 +101,10 @@ public class TypeAliasRegistry {
     registerAlias("ResultSet", ResultSet.class);
   }
 
+
+  /**
+   * 根据别名找对应的class类型
+   */
   @SuppressWarnings("unchecked")
   // throws class cast exception as well if types cannot be assigned
   public <T> Class<T> resolveAlias(String string) {
@@ -126,6 +130,9 @@ public class TypeAliasRegistry {
     registerAliases(packageName, Object.class);
   }
 
+  /**
+   * 根据包名搜索 Java Bean 并注册别名
+   */
   public void registerAliases(String packageName, Class<?> superType) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
@@ -133,12 +140,18 @@ public class TypeAliasRegistry {
     for (Class<?> type : typeSet) {
       // Ignore inner classes and interfaces (including package-info.java)
       // Skip also inner classes. See issue #6
+      // Java Bean必须不是匿名内部类、接口和成员内部类
       if (!type.isAnonymousClass() && !type.isInterface() && !type.isMemberClass()) {
         registerAlias(type);
       }
     }
   }
 
+  /**
+   * 注册别名
+   * 在没有注解的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名。
+   * 若有注解，则别名为其注解值
+   */
   public void registerAlias(Class<?> type) {
     String alias = type.getSimpleName();
     Alias aliasAnnotation = type.getAnnotation(Alias.class);

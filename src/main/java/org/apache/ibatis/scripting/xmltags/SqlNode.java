@@ -20,7 +20,7 @@ package org.apache.ibatis.scripting.xmltags;
  * <if></if>
  * <foreach></foreach>
  * 等
- * 运用到组合设计模式
+ * 运用到责任链设计模式
  * @author Clinton Begin
  */
 public interface SqlNode {
