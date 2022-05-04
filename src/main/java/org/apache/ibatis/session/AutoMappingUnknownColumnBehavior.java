@@ -20,6 +20,10 @@ import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
+ * 发现自动映射目标未知列（或未知属性类型）的行为枚举。
+ * NONE: 不做任何反应
+ * WARNING: 输出警告日志 'org.apache.ibatis.session.AutoMappingUnknownColumnBehavior' 的日志等级必须设置为 WARN
+ * FAILING: 映射失败，抛出 SqlSessionException
  * Specify the behavior when detects an unknown column (or unknown property type) of automatic mapping target.
  *
  * @since 3.4.0

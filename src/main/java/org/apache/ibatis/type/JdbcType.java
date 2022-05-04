@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * JdbcType 常量
  * @author Clinton Begin
  */
 public enum JdbcType {

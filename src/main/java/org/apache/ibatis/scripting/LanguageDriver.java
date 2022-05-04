@@ -23,6 +23,9 @@ import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
 
+/**
+ * 动态 SQL 生成使用的脚本语言
+ */
 public interface LanguageDriver {
 
   /**

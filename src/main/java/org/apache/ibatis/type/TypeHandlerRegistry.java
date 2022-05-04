@@ -49,6 +49,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 类型处理器注册器
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */

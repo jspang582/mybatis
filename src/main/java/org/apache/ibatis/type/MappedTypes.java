@@ -22,6 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 通过类型处理器的泛型，MyBatis 可以得知该类型处理器处理的 Java 类型，
+ * 通过该注解指定与类型处理器关联的 Java 类型列表，
+ * 如果是全局配置文件则在类型处理器的配置元素上增加一个 jdbcType 属性（比如：jdbcType="VARCHAR"），
+ * 如果注解和配置元素同时指定，则注解上的配置将被忽略
  * The annotation that specify java types to map {@link TypeHandler}.
  *
  * <p>

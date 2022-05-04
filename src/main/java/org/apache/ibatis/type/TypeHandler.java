@@ -21,7 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * 类型处理器接口,用来设置参数和获取结果
+ * 类型处理器接口，
+ * 在设置预处理语句（PreparedStatement）中的参数或从结果集中取出一个值时，都会用类型处理器将获取到的值以合适的方式转换成 Java 类型
  * @author Clinton Begin
  */
 public interface TypeHandler<T> {

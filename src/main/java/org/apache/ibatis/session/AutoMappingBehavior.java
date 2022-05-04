@@ -16,6 +16,7 @@
 package org.apache.ibatis.session;
 
 /**
+ * MyBatis 自动映射列到字段或属性策略。 NONE 表示关闭自动映射；PARTIAL 只会自动映射没有定义嵌套结果映射的字段。 FULL 会自动映射任何复杂的结果集（无论是否嵌套）
  * Specifies if and how MyBatis should automatically map columns to fields/properties.
  *
  * @author Eduardo Macarron

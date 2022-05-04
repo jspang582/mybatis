@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 当重写已有的类型处理器或创建自定义的类型处理器来处理不支持的或非标准的类型时，通过该注解可以映射到一个 JDBC 类型
  * The annotation that specify jdbc types to map {@link TypeHandler}.
  *
  * <p>
