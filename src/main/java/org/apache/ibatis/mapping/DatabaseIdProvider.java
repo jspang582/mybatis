@@ -21,6 +21,11 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 /**
+ * 数据库厂商标识提供者。
+ * MyBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂商的支持是基于映射语句中的 databaseId 属性。
+ * MyBatis 会加载带有匹配当前数据库 databaseId 属性和所有不带 databaseId 属性的语句。
+ * 如果同时找到带有 databaseId 和不带 databaseId 的相同语句，则后者会被舍弃。
+ *
  * Should return an id to identify the type of this database.
  * That id can be used later on to build different queries for each database type
  * This mechanism enables supporting multiple vendors or versions

@@ -33,7 +33,8 @@ import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.io.Resources;
 
 /**
- * 类型别名注册器, string -> Class
+ * 类型别名注册器。
+ * 类型别名可为 Java 类型设置一个缩写名字，意在降低冗余的全限定类名书写
  * @author Clinton Begin
  */
 public class TypeAliasRegistry {

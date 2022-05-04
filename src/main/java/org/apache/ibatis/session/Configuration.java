@@ -165,6 +165,10 @@ public class Configuration {
    * 从SQL中删除多余的空格字符。请注意，这也会影响SQL中的文字字符串。
    */
   protected boolean shrinkWhitespacesInSql;
+
+  /**
+   * 设置“foreach”标记上“nullable”属性的默认值
+   */
   protected boolean nullableOnForEach;
 
   /**
@@ -183,7 +187,7 @@ public class Configuration {
   protected Class<? extends VFS> vfsImpl;
 
   /**
-   *
+   * 指定保存提供程序方法的sql提供程序类。当sql provider注释（例如@SelectProvider）中的type（或value）属性被省略时，该类将应用于该属性。
    */
   protected Class<?> defaultSqlProviderType;
 
@@ -234,6 +238,10 @@ public class Configuration {
 
   protected Properties variables = new Properties();
   protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
+
+  /**
+   * 指定对象工厂实现
+   */
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
 

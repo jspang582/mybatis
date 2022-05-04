@@ -27,6 +27,14 @@ import org.apache.ibatis.datasource.DataSourceException;
 import org.apache.ibatis.datasource.DataSourceFactory;
 
 /**
+ * 这个数据源实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，然后放置一个 JNDI 上下文的数据源引用。
+ * 这种数据源配置只需要两个属性：
+ *    initial_context – 这个属性用来在 InitialContext 中寻找上下文（即，initialContext.lookup(initial_context)）。这是个可选属性，如果忽略，那么将会直接从 InitialContext 中寻找 data_source 属性
+ *    data_source – 这是引用数据源实例位置的上下文路径。提供了 initial_context 配置时会在其返回的上下文中进行查找，没有提供时则直接在 InitialContext 中查找
+ *    和其他数据源配置类似，可以通过添加前缀“env.”直接把属性传递给 InitialContext。比如：
+ *        env.encoding=UTF8
+ *    这就会在 InitialContext 实例化时往它的构造方法传递值为 UTF8 的 encoding 属性
+ *
  * @author Clinton Begin
  */
 public class JndiDataSourceFactory implements DataSourceFactory {
